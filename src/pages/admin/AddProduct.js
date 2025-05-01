@@ -59,9 +59,11 @@ const AddProduct = () => {
           // Set image preview if product has an image
           if (productData.imageUrl) {
             // If the image URL is relative, prepend the server URL
+            const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5050/api';
+            const serverUrl = baseUrl.replace(/\/api$/, ''); // Remove /api if present
             const imageUrl = productData.imageUrl.startsWith('http') 
               ? productData.imageUrl 
-              : `http://localhost:5000${productData.imageUrl}`;
+              : `${serverUrl}${productData.imageUrl}`;
             setImagePreview(imageUrl);
           }
           setLoading(false);

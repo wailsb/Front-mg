@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import axios from 'axios';
+import { productsAPI, cartAPI, wishlistAPI } from '../../utils/api';
 import { toast } from 'react-toastify';
 import { FaShoppingCart, FaHeart, FaSearch } from 'react-icons/fa';
 import { useAuth } from '../../contexts/AuthContext';
@@ -19,7 +19,7 @@ const Products = () => {
     const loadRealData = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:5050/api/products/public');
+        const response = await productsAPI.getAll();
         setProducts(response.data);
         
         // Get unique categories
@@ -50,14 +50,10 @@ const Products = () => {
     }
     
     try {
-      await axios.post('http://localhost:5050/api/cart', {
+      await cartAPI.update([{
         productId,
         quantity: 1
-      }, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token') || sessionStorage.getItem('token')}`
-        }
-      });
+      }]);
       toast.success('Product added to cart');
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -74,13 +70,9 @@ const Products = () => {
     }
     
     try {
-      await axios.post('http://localhost:5050/api/wishlist', {
+      await wishlistAPI.update([{
         productId
-      }, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token') || sessionStorage.getItem('token')}`
-        }
-      });
+      }]);
       toast.success('Product added to wishlist');
     } catch (error) {
       console.error('Error adding to wishlist:', error);

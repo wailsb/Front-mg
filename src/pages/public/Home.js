@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaBoxOpen, FaChartLine, FaMobileAlt, FaShieldAlt, FaRegCheckCircle, FaShoppingCart, FaHeart, FaArrowRight } from 'react-icons/fa';
-import axios from 'axios';
+import { productsAPI, cartAPI, wishlistAPI } from '../../utils/api';
 import { toast } from 'react-toastify';
 import { useSite } from '../../contexts/SiteContext';
 import { useAuth } from '../../contexts/AuthContext';
@@ -22,7 +22,7 @@ const Home = () => {
     const fetchFeaturedProducts = async () => {
       try {
         setLoading(true);
-        const response = await axios.get('http://localhost:5050/api/products/public');
+        const response = await productsAPI.getAll();
         // Get up to 4 products with images as featured products
         const productsWithImages = response.data.filter(product => product.imageUrl && product.quantity > 0);
         setFeaturedProducts(productsWithImages.slice(0, 4));
@@ -43,14 +43,10 @@ const Home = () => {
     }
     
     try {
-      await axios.post('http://localhost:5050/api/cart', {
+      await cartAPI.update([{
         productId,
         quantity: 1
-      }, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token') || sessionStorage.getItem('token')}`
-        }
-      });
+      }]);
       toast.success('Product added to cart');
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -65,13 +61,9 @@ const Home = () => {
     }
     
     try {
-      await axios.post('http://localhost:5050/api/wishlist', {
+      await wishlistAPI.update([{
         productId
-      }, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token') || sessionStorage.getItem('token')}`
-        }
-      });
+      }]);
       toast.success('Product added to wishlist');
     } catch (error) {
       console.error('Error adding to wishlist:', error);

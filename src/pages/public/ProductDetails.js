@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { FaShoppingCart, FaHeart, FaArrowLeft } from 'react-icons/fa';
-import axios from 'axios';
+import { productsAPI, cartAPI, wishlistAPI } from '../../utils/api';
 import { toast } from 'react-toastify';
 import { useAuth } from '../../contexts/AuthContext';
 
@@ -17,7 +17,7 @@ const ProductDetails = () => {
     const fetchProduct = async () => {
       try {
         setLoading(true);
-        const response = await axios.get(`http://localhost:5000/api/products/${id}/public`);
+        const response = await productsAPI.getById(id);
         setProduct(response.data);
         setLoading(false);
       } catch (error) {
@@ -45,14 +45,10 @@ const ProductDetails = () => {
     }
     
     try {
-      await axios.post('http://localhost:5000/api/cart', {
+      await cartAPI.update([{
         productId: product.id,
         quantity
-      }, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token') || sessionStorage.getItem('token')}`
-        }
-      });
+      }]);
       toast.success('Product added to cart');
     } catch (error) {
       console.error('Error adding to cart:', error);
@@ -68,13 +64,9 @@ const ProductDetails = () => {
     }
     
     try {
-      await axios.post('http://localhost:5000/api/wishlist', {
+      await wishlistAPI.update([{
         productId: product.id
-      }, {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem('token') || sessionStorage.getItem('token')}`
-        }
-      });
+      }]);
       toast.success('Product added to wishlist');
     } catch (error) {
       console.error('Error adding to wishlist:', error);

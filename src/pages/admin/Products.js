@@ -4,7 +4,7 @@ import { productsAPI, categoriesAPI } from '../../utils/api';
 import { getUploadedImageUrl } from '../../utils/imageUtils';
 import { FaPlus, FaSearch, FaFilter, FaEdit, FaTrash, FaExclamationTriangle } from 'react-icons/fa';
 import { toast } from 'react-toastify';
-import axios from 'axios';
+
 
 const Products = () => {
   const [products, setProducts] = useState([]);

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { FaBox, FaDownload, FaEye } from 'react-icons/fa';
 import { useAuth } from '../../contexts/AuthContext';
-import axios from 'axios';
+import { ordersAPI } from '../../utils/api';
 import { toast } from 'react-toastify';
 
 const OrderHistory = () => {
@@ -27,7 +27,7 @@ const OrderHistory = () => {
         };
         
         // Fetch orders from the real API endpoint
-        const response = await axios.get('http://localhost:5050/api/orders', config);
+        const response = await ordersAPI.getAll();
         setOrders(response.data);
         console.log('Orders fetched:', response.data);
         
@@ -63,7 +63,7 @@ const OrderHistory = () => {
       
       // Create the API URL for document download
       const token = localStorage.getItem('token') || sessionStorage.getItem('token');
-      const baseUrl = 'http://localhost:5050/api'; // Match your API base URL
+      const baseUrl = process.env.REACT_APP_API_URL || 'http://localhost:5050/api'; // Use environment variable
       const downloadUrl = `${baseUrl}/orders/${orderId}/document`;
       
       // Create a download link
